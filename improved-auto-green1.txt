@@ -927,7 +927,7 @@ function tEe_RocK_display_free_throw_menu() {
     y_position = 50;
     print(2, y_position, OLED_FONT_SMALL, OLED_WHITE, tEe_RocK_FreeThrowInfo[0]);
 }
-function process_shot_input(int shot_button, int stick_direction, int rhythm_combo, int manual_combo) {
+function process_shot_input(int shot_button, int stick_direction, int combo_type) {
     if (Rock_Tee_fades_enabled) {
         if (get_val(shot_button)) {
             set_val(shot_button, 0);
@@ -948,13 +948,25 @@ function process_shot_input(int shot_button, int stick_direction, int rhythm_com
                     set_rgb(0, 255, 0);
                     set_val(PS4_RY, 0);
                     set_val(PS4_RX, 0);
-                    combo_run(rhythm_combo);
+                    if (combo_type == 0) {
+                        combo_run(Rock_Tee_R2_rhythm_shot_combo);
+                    } else {
+                        combo_run(Rock_Tee_rhythm_shot_combo);
+                    }
                 } else {
                     set_rgb(0, 0, 0);
-                    combo_run(manual_combo);
+                    if (combo_type == 0) {
+                        combo_run(Rock_Tee_R2_manual_rhythm_shot_combo);
+                    } else {
+                        combo_run(Rock_Tee_manual_rhythm_shot_combo);
+                    }
                 }
             } else if (Rock_Tee_manual_shot_triggered) {
-                combo_run(manual_combo);
+                if (combo_type == 0) {
+                    combo_run(Rock_Tee_R2_manual_rhythm_shot_combo);
+                } else {
+                    combo_run(Rock_Tee_manual_rhythm_shot_combo);
+                }
             }
             Rock_Tee_manual_shot_triggered = FALSE;
             Rock_Tee_manual_shot_active = FALSE;
@@ -964,7 +976,11 @@ function process_shot_input(int shot_button, int stick_direction, int rhythm_com
             if (event_press(shot_button)) {
                 set_val(PS4_RY, 0);
                 set_val(PS4_RX, 0);
-                combo_run(rhythm_combo);
+                if (combo_type == 0) {
+                    combo_run(Rock_Tee_R2_rhythm_shot_combo);
+                } else {
+                    combo_run(Rock_Tee_rhythm_shot_combo);
+                }
             }
         } else {
             if (get_val(shot_button)) {
@@ -977,7 +993,11 @@ function process_shot_input(int shot_button, int stick_direction, int rhythm_com
             else if (event_release(shot_button) && Rock_Tee_manual_shot_triggered) {
                 Rock_Tee_manual_shot_triggered = FALSE;
                 Rock_Tee_manual_shot_active = FALSE;
-                combo_run(manual_combo);
+                if (combo_type == 0) {
+                    combo_run(Rock_Tee_R2_manual_rhythm_shot_combo);
+                } else {
+                    combo_run(Rock_Tee_manual_rhythm_shot_combo);
+                }
             }
         }
     }
@@ -1058,17 +1078,17 @@ function handle_shot_timing() {
     }
     if (Rock_Tee_shot_enabled && get_val(PS4_R2) >= 99 && r0cKTeE_square_dunk_enabled && r0cKTeE_square_dunk_trigger_button == 1) {
         if (Rock_Tee_shot_trigger_button == 0) {
-            process_shot_input(PS4_SQUARE, -100, Rock_Tee_R2_rhythm_shot_combo, Rock_Tee_R2_manual_rhythm_shot_combo);
+            process_shot_input(PS4_SQUARE, -100, 0);
         } else if (Rock_Tee_shot_trigger_button == 1) {
-            process_shot_input(PS4_L1, -100, Rock_Tee_R2_rhythm_shot_combo, Rock_Tee_R2_manual_rhythm_shot_combo);
+            process_shot_input(PS4_L1, -100, 0);
         }
         return;
     }
     if (Rock_Tee_shot_enabled && (!get_val(PS4_R2) || (r0cKTeE_square_dunk_enabled && r0cKTeE_square_dunk_trigger_button == 1))) {
         if (Rock_Tee_shot_trigger_button == 0) {
-            process_shot_input(PS4_SQUARE, 100, Rock_Tee_rhythm_shot_combo, Rock_Tee_manual_rhythm_shot_combo);
+            process_shot_input(PS4_SQUARE, 100, 1);
         } else if (Rock_Tee_shot_trigger_button == 1) {
-            process_shot_input(PS4_L1, 100, Rock_Tee_rhythm_shot_combo, Rock_Tee_manual_rhythm_shot_combo);
+            process_shot_input(PS4_L1, 100, 1);
         }
     }
 }
